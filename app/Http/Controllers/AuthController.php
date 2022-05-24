@@ -42,8 +42,17 @@ class AuthController extends Controller
             );
         }
 
+        // Get authenticated user
         $user = Auth::user();
 
-        return $user;
+        // Generate JWT token
+        $jwt = $user->createToken('token')->plainTextToken;
+
+        $cookie = cookie('jwt', $jwt, 1440);
+
+        // Return authenticated user token in a cookie
+        return response([
+            'message' => "success"
+        ])->withCookie($cookie);
     }
 }
