@@ -37,6 +37,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    // While $fillable array specifies which fields are to be mass assigned
+    // $guarded property does the oposite, specifying fields not to mass assign.
+    // When specified and empty, all fields are mass assignable ;).
+    protected $guarded = [];
+
     /**
      * The attributes that should be hidden for serialization.
      *
