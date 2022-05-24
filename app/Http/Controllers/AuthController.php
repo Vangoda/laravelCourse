@@ -52,7 +52,7 @@ class AuthController extends Controller
 
         // Return authenticated user token in a cookie
         return response([
-            'message' => "success"
+            'message' => $jwt
         ])->withCookie($cookie);
     }
 
