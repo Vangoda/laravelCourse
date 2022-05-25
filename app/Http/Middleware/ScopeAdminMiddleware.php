@@ -16,6 +16,11 @@ class ScopeAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        // Token scope check
+        if (!$request->user()->tokenCan('admin')) {
+            abort('unauthorized');
+        }
+
         return $next($request);
     }
 }
