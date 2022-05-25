@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateInfoRequest;
 use App\Models\User;
 use Auth;
 use Cookie;
@@ -73,6 +74,11 @@ class AuthController extends Controller
         ])->withCookie($cookie);
     }
 
+    /**
+     * @param Request $request 
+     * @return HttpResponse|ResponseFactory 
+     * @throws BindingResolutionException 
+     */
     public function logout(Request $request)
     {
         // Removes the cookie and revokes the token
@@ -92,5 +98,9 @@ class AuthController extends Controller
     {
         // Returns user
         return $request->user();
+    }
+
+    public function updateInfo(UpdateInfoRequest $request)
+    {
     }
 }
