@@ -63,7 +63,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         // Generate JWT token
-        $jwt = $user->createToken('token')->plainTextToken;
+        $jwt = $user->createToken('token', ['admin'])->plainTextToken;
 
         $cookie = cookie('jwt', $jwt, 1440);
 
@@ -75,8 +75,9 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Removes the cookie
+        // Removes the cookie and revokes the token
         $cookie = Cookie::forget('jwt');
+        $request->user()->currentAccessToken()->delete();
 
         return response([
             'message' => 'Successfully logged out. Cookie removed.'
