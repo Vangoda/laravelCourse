@@ -102,5 +102,31 @@ class AuthController extends Controller
 
     public function updateInfo(UpdateInfoRequest $request)
     {
+        // Update users email, first_name and last_name
+
+        // Get user from request
+        $user = $request->user();
+        /*  Update user information
+        *   
+        *   $request->only() returns assoc array from requested matching given
+        *   keys. Empty or non existing keys simply won't be added to output
+        *   array.
+        *   $user->update() updates model properties in db which match given
+        *   input array keys to columns in db table.
+        */
+        $user->update($request->only('first_name', 'last_name', 'email'));
+
+        return response($user, Response::HTTP_ACCEPTED);
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        // Change users password
+
+        $user = $request->user();
+        // Hash and update the password
+        $user->update([
+            'password' => Hash::make($request->input('password'))
+        ]);
     }
 }
