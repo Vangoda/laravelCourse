@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ScopeAdminMiddleware
 {
@@ -18,7 +19,7 @@ class ScopeAdminMiddleware
     {
         // Token scope check
         if (!$request->user()->tokenCan('admin')) {
-            abort('unauthorized');
+            abort(Response::HTTP_UNAUTHORIZED, 'unauthorized');
         }
 
         return $next($request);
