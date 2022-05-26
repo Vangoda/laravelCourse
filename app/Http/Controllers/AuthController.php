@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateInfoRequest;
+use App\Http\Requests\UpdatePasswordRequest as UpdatePasswordRequest;
 use App\Models\User;
 use Auth;
 use Cookie;
@@ -128,5 +129,7 @@ class AuthController extends Controller
         $user->update([
             'password' => Hash::make($request->input('password'))
         ]);
+
+        return response($user, Response::HTTP_ACCEPTED);
     }
 }
