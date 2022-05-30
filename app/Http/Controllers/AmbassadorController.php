@@ -10,6 +10,6 @@ class AmbassadorController extends Controller
     public function index()
     {
         // Runs a db query to fetch user data 
-        return User::where('is_admin', 0)->get();
+        return User::ambassadors()->get();
     }
 }
