@@ -39,6 +39,8 @@ namespace App\Models{
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[] $tokens
  * @property-read int|null $tokens_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User ambassadors()
+ * @method static \Illuminate\Database\Eloquent\Builder|User admins()
  */
 	class User extends \Eloquent {}
 }
