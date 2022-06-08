@@ -16,13 +16,12 @@ class LinkSeeder extends Seeder
      */
     public function run()
     {
-        Link::factory(30)->create()
+        Link::factory(30)->create()->each(function (Link $link) {
             // Create a LinkProduct for every createdLink
-            ->each(function (Link $link) {
-                LinkProduct::create([
-                    'link_id' => $link->id, // Generated id
-                    'product_id' => Product::inRandomOrder()->first()->id // Random product id
-                ]);
-            });
+            LinkProduct::create([
+                'link_id' => $link->id, // Generated id
+                'product_id' => Product::inRandomOrder()->first()->id // Random product id
+            ]);
+        });
     }
 }

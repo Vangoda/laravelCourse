@@ -12,10 +12,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|LinkProduct newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LinkProduct query()
  * @mixin \Eloquent
+ * @property int $id
+ * @property int $product_id
+ * @property int $link_id
+ * @method static \Illuminate\Database\Eloquent\Builder|LinkProduct whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LinkProduct whereLinkId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|LinkProduct whereProductId($value)
  */
 class LinkProduct extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    public $timestamps = false;
 }
