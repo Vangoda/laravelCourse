@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Link;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory
@@ -13,8 +14,16 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
+        /** @var Link $link */
+        $link = Link::inRandomOrder()->first();
         return [
-            //
+            'code' => $link->code,
+            'user_id' => $link->user->id,
+            'ambassador_email' => $link->user->email,
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->email,
+            'complete' => 1
         ];
     }
 }
