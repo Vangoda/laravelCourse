@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Order
@@ -42,10 +42,39 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereZip($value)
  * @mixin \Eloquent
+ * @property-read mixed $admin_revenue
+ * @property-read string $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderItem[] $orderItems
+ * @property-read int|null $order_items_count
+ * @method static \Database\Factories\OrderFactory factory(...$parameters)
  */
 class Order extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdminRevenueAttribute()
+    {
+        // Returns the sum of admin revenues from all the order items
+        return $this->orderItems->sum(
+            fn (OrderItem $item) => $item->admin_revenue
+        );
+    }
 }
