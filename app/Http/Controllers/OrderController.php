@@ -12,6 +12,6 @@ class OrderController extends Controller
     {
         // returns all the orders
 
-        return OrderResource::collection(Order::all());
+        return OrderResource::collection(Order::with('orderItems')->get());
     }
 }
