@@ -19,27 +19,38 @@ use App\Http\Controllers\OrderController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+// Users are divided into groups. Groups are used to limit the access to API.
+// Some API calls are shared between all groups and will be grouped in a 
+// function. Access to API is done by using laravel scopes.
 
-// Admin group
-Route::prefix('admin')->group(function () {
-    // The route
+/**
+ * @param string $scope 
+ * @return void 
+ */
+function common(string $scope){
+    // Common routes shared by groups
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
 
-    Route::middleware('auth:sanctum', 'scope.admin')->group(function () {
+    Route::middleware('auth:sanctum', 'scope.'.$scope )->group(function () {
         Route::get('user', [AuthController::class, 'user']);
         Route::put('users/info', [AuthController::class, 'updateInfo']);
         Route::put('users/password', [AuthController::class, 'updatePassword']);
         Route::post('logout', [AuthController::class, 'logout']);
+    });
+}
 
+// Admin group
+Route::prefix('admin')->group(function () {
+    // The routes
+    common('admin');
+
+    // Admin specific routes
+    Route::middleware('auth:sanctum', 'scope.admin' )->group(function () {
         Route::get('ambassadors', [AmbassadorController::class, 'index']);
         Route::get('users/{id}/links', [LinkController::class, 'index']);
-
         Route::get('orders', [OrderController::class, 'index']);
-
+    
         Route::apiResource('products', ProductController::class);
     });
 });
@@ -47,22 +58,7 @@ Route::prefix('admin')->group(function () {
 // Ambassador group
 Route::prefix('ambassador')->group(function () {
     // Ambassador routes
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
-
-    Route::middleware('auth:sanctum', 'scope.ambassador')->group(function () {
-        Route::get('user', [AuthController::class, 'user']);
-        Route::put('users/info', [AuthController::class, 'updateInfo']);
-        Route::put('users/password', [AuthController::class, 'updatePassword']);
-        Route::post('logout', [AuthController::class, 'logout']);
-
-        Route::get('ambassadors', [AmbassadorController::class, 'index']);
-        Route::get('users/{id}/links', [LinkController::class, 'index']);
-
-        Route::get('orders', [OrderController::class, 'index']);
-
-        Route::apiResource('products', ProductController::class);
-    });
+    common('ambassador');
 });
 
 // Checkout
