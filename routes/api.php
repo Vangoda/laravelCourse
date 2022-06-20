@@ -44,7 +44,25 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-// Ambassador
+// Ambassador group
+Route::prefix('ambassador')->group(function () {
+    // Ambassador routes
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
 
+    Route::middleware('auth:sanctum', 'scope.admin')->group(function () {
+        Route::get('user', [AuthController::class, 'user']);
+        Route::put('users/info', [AuthController::class, 'updateInfo']);
+        Route::put('users/password', [AuthController::class, 'updatePassword']);
+        Route::post('logout', [AuthController::class, 'logout']);
+
+        Route::get('ambassadors', [AmbassadorController::class, 'index']);
+        Route::get('users/{id}/links', [LinkController::class, 'index']);
+
+        Route::get('orders', [OrderController::class, 'index']);
+
+        Route::apiResource('products', ProductController::class);
+    });
+});
 
 // Checkout
