@@ -95,6 +95,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderItem[] $orderItems
  * @property-read int|null $order_items_count
  * @method static \Database\Factories\OrderFactory factory(...$parameters)
+ * @property-read string $ambassador_revenue
  */
 	class Order extends \Eloquent {}
 }
@@ -188,6 +189,9 @@ namespace App\Models{
  * @property-read int|null $tokens_count
  * @method static \Illuminate\Database\Eloquent\Builder|User ambassadors()
  * @method static \Illuminate\Database\Eloquent\Builder|User admins()
+ * @property-read mixed $revenue
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
+ * @property-read int|null $orders_count
  */
 	class User extends \Eloquent {}
 }
