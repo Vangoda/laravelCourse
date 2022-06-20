@@ -58,13 +58,23 @@ class User extends Authenticatable
 
     public function scopeAmbassadors($query)
     {
-
         return $query->whereIsAdmin(0);
     }
 
     public function scopeAdmins($query)
     {
-
         return $query->whereIsAdmin(1);
+    }
+
+    // Attributes
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+
+    public function getRevenueAttribute(){
+        return $this->orders->sum(
+            fn(Order $order) => $order->ambassador_revenue
+        );
     }
 }
