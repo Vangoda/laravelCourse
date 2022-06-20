@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateInfoRequest;
 use App\Http\Requests\UpdatePasswordRequest as UpdatePasswordRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Auth;
 use Cookie;
@@ -107,12 +108,13 @@ class AuthController extends Controller
 
     /**
      * @param Request $request 
-     * @return mixed 
+     * @return UserResource 
      */
     public function user(Request $request)
     {
         // Returns user
-        return $request->user();
+        $user = $request->user();
+        return new UserResource($user);
     }
 
     public function updateInfo(UpdateInfoRequest $request)
