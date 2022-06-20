@@ -52,11 +52,10 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        // Check credentials
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response(
-                [
-                    'error' => 'Invalid credentials!'
-                ],
+                ['error' => 'Invalid credentials!'],
                 Response::HTTP_UNAUTHORIZED
             );
         }
@@ -64,8 +63,23 @@ class AuthController extends Controller
         // Get authenticated user
         $user = Auth::user();
 
+        // Check if admin
+        $adminLogin = $request->path() === 'api/admin/login';
+        if($adminLogin && !$user->is_admin){
+            // Deny access when user other than admin tries to access admin
+            // scope.
+
+            return response(
+                ['error' => 'Access denied!'],
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
+
+        // Determine the scope for the token
+        $scope = $adminLogin ? 'admin' : 'ambassador';
+
         // Generate JWT token
-        $jwt = $user->createToken('token', ['admin'])->plainTextToken;
+        $jwt = $user->createToken('token', [$scope])->plainTextToken;
 
         $cookie = cookie('jwt', $jwt, 1440);
 
