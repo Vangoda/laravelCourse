@@ -50,7 +50,7 @@ Route::prefix('ambassador')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
 
-    Route::middleware('auth:sanctum', 'scope.admin')->group(function () {
+    Route::middleware('auth:sanctum', 'scope.ambassador')->group(function () {
         Route::get('user', [AuthController::class, 'user']);
         Route::put('users/info', [AuthController::class, 'updateInfo']);
         Route::put('users/password', [AuthController::class, 'updatePassword']);
