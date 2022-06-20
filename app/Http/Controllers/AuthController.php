@@ -33,7 +33,7 @@ class AuthController extends Controller
             'email'
         ) + [
             'password' => Hash::make($request->input('password')),
-            'is_admin' => 1
+            'is_admin' => $request->path() === 'api/admin/register' ? 1 : 0
         ]);
 
         return response($user, Response::HTTP_CREATED);
