@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -82,5 +83,15 @@ class ProductController extends Controller
         $product->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /** @return Collection<Product>  */
+    public function frontend(){
+        // Returns all of the products
+        return Product::all();
+    }
+
+    public function backend(){
+        return Product::paginate();
     }
 }
