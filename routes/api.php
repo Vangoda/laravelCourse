@@ -24,6 +24,7 @@ use App\Http\Controllers\OrderController;
 // function. Access to API is done by using laravel scopes.
 
 /**
+ * Common endpoints for scopes
  * @param string $scope 
  * @return void 
  */
@@ -51,6 +52,14 @@ Route::prefix('admin')->group(function () {
         Route::get('users/{id}/links', [LinkController::class, 'index']);
         Route::get('orders', [OrderController::class, 'index']);
     
+        /* apiResource creates following routes
+        Verb          Path                              Action  Route Name
+        GET           /products                         index   products.index
+        POST          /products                         store   products.store
+        GET           /products/{product}               show    products.show
+        PUT|PATCH     /products/{product}               update  products.update
+        DELETE        /products/{product}               destroy products.destroy
+        */
         Route::apiResource('products', ProductController::class);
     });
 });
@@ -59,6 +68,10 @@ Route::prefix('admin')->group(function () {
 Route::prefix('ambassador')->group(function () {
     // Ambassador routes
     common('ambassador');
+
+    // Ambassador specific
+    Route::get('products/frontend', [ProductController::class, 'frontend']);
+    Route::get('products/backend', [ProductController::class, 'backend']);
 });
 
 // Checkout
