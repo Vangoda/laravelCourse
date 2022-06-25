@@ -2,19 +2,21 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Events\ProductUpdatedEvent;
+use Illuminate\Support\Facades\Cache;
 
 class ProductUpdatedListener
 {
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param  ProductUpdatedEvent  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(ProductUpdatedEvent $event)
     {
-        //
+        // Invalidate the cache
+        Cache::forget('products_frontend');
+        Cache::forget('products_backend');
     }
 }
