@@ -37,7 +37,7 @@ class OrderController extends Controller
         }
 
         // Get the link from code
-        $link = Link::where('code', $request->input('code'));
+        $link = Link::where('code', $request->input('code'))->first();
 
         // Create new Order object
         $order = new Order();
@@ -47,17 +47,17 @@ class OrderController extends Controller
         $order->user_id = $link->user_id;
         $order->ambassador_email = $link->user->email;
         $order->first_name = $request->input('firstName');
-        $order->last_name = $link->input('last_name');
-        $order->email = $link->input('email');
-        $order->address = $link->input('address');
-        $order->country = $link->input('country');
-        $order->city = $link->input('city');
-        $order->zip = $link->input('zip');
+        $order->last_name = $request->input('lastName');
+        $order->email = $request->input('email');
+        $order->address = $request->input('address');
+        $order->country = $request->input('country');
+        $order->city = $request->input('city');
+        $order->zip = $request->input('zip');
         
         $order->save();
 
         // Create new order items from products in the current order
-        foreach($request->input('items') as $item){
+        foreach($request->input('orderItems') as $item){
             $product = Product::find($item['product_id']);
 
             $orderItem = new OrderItem();
