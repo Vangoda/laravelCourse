@@ -80,9 +80,12 @@ Route::prefix('ambassador')->group(function () {
         Route::get('stats', [StatsController::class, 'index']);
         Route::get('rankings', [StatsController::class, 'rankings']);
 
-        // Links
+        // Links, only ambassadors can create links
         Route::post('links', [LinkController::class, 'store']);
     });
 });
 
 // Checkout
+Route::prefix('checkout')->group(function() {
+    Route::get('link/{code}', [LinkController::class, 'show']);
+});
