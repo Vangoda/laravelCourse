@@ -30,6 +30,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Link whereUserId($value)
  * @method static \Database\Factories\LinkFactory factory(...$parameters)
  * @property-read \App\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
+ * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
  * @property-read int|null $products_count
  */
