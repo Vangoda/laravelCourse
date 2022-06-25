@@ -9,10 +9,27 @@ use Illuminate\Support\Str;
 
 class LinkController extends Controller
 {
+    /* Standard API routes
+        Verb          Path                              Action  Route Name
+        GET           /links                         index   links.index
+        POST          /links                         store   links.store
+        GET           /links/{code}               show    links.show
+        PUT|PATCH     /links/{code}               update  links.update
+        DELETE        /links/{code}               destroy links.destroy
+    */
+
     public function index($id)
     {
         // Query Link models which match user id.
         return Link::whereUserId($id)->get();
+    }
+
+    public function show($code){
+        // Get single link
+
+        return Link::with('user', 'products')
+        ->where('code', $code)
+        ->get();
     }
 
     public function store(Request $request){
