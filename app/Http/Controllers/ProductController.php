@@ -130,6 +130,16 @@ class ProductController extends Controller
             );
         }
 
+        // Implementing sort
+        if($request->has('sort')){
+            $descending = strtolower($request->input('sort')) == "desc" ? true : false;
+
+            // Determine column to sort by. Default by price
+            $sortBy = $request->has('sortBy') ? $request->input('sortBy') : 'price';
+
+            $products = $products->sortBy($sortBy, SORT_NATURAL, $descending);
+        }
+
         // Get total after filtering
         $total = $products->count();
         // Calculate last page
