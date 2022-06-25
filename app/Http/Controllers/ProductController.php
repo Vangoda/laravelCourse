@@ -100,7 +100,36 @@ class ProductController extends Controller
         return $products;
     }
 
-    public function backend(){
-        return Product::paginate();
+    /**
+     * @param Request $request 
+     * @return array 
+     */
+    public function backend(Request $request){
+        
+        $page = $request->input('page', 1);
+        $limit = $request->input('limit', 2);
+
+        $products = Cache::remember('productsBackend', 1800, 
+            fn() => Product::all()
+        );
+        /**
+         * @var Collection $products
+         * @var int $page
+         * @var int $limit
+         */
+        $total = $products->count();
+        $lastPage = ceil($total/$limit);
+        // Set page to last page if greater
+        $page = $page > $lastPage ? $lastPage : $page;
+
+        return [
+            'meta' => [
+                'total' => $total,
+                'page' => $page,
+                'per_page' => $limit,
+                'last_page' => ceil($total/$limit)
+            ],
+            'data' => $products->forPage($page, $limit)->values()
+        ];
     }
 }
