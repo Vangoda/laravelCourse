@@ -35,4 +35,21 @@ class StatsController extends Controller
             ];
         });
     }
+
+    /** 
+     * Returns the ambassadors sorted by their revenue
+     * @return void  */
+    public function rankings(){
+        // Get ambassadors
+        $ambassadors = User::ambassadors()->get();
+
+        // Create rankings array
+        $rankings = $ambassadors->map(fn (User $ambassador) => [
+            'name' => $ambassador->name,
+            'revenue' => $ambassador->revenue
+        ]);
+        
+        // Sort the rankings and return collection
+        return $rankings->sortBy('revenue', SORT_NUMERIC, true)->values();
+    }
 }
