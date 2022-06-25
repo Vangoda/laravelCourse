@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
@@ -88,7 +89,15 @@ class ProductController extends Controller
     /** @return Collection<Product>  */
     public function frontend(){
         // Returns all of the products
-        return Product::all();
+        // Utilize caching
+        if($products = Cache::get('productsFronted')){
+            return $products;
+        }
+
+        $products = Product::all();
+        Cache::set('productsFronted', $products, 1800);
+
+        return $products;
     }
 
     public function backend(){
