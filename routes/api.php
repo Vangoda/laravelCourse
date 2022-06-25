@@ -87,5 +87,7 @@ Route::prefix('ambassador')->group(function () {
 
 // Checkout
 Route::prefix('checkout')->group(function() {
-    Route::get('link/{code}', [LinkController::class, 'show']);
+    Route::get('links/{code}', [LinkController::class, 'show']);
+    Route::post('orders',[OrderController::class, 'store']);
+    Route::get('orders',[OrderController::class, 'index']);
 });
