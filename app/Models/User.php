@@ -37,6 +37,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read int|null $tokens_count
  * @method static \Illuminate\Database\Eloquent\Builder|User ambassadors()
  * @method static \Illuminate\Database\Eloquent\Builder|User admins()
+ * @property-read mixed $name
+ * @property-read mixed $revenue
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
+ * @property-read int|null $orders_count
  */
 class User extends Authenticatable
 {
