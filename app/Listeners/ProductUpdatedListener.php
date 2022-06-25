@@ -16,7 +16,7 @@ class ProductUpdatedListener
     public function handle(ProductUpdatedEvent $event)
     {
         // Invalidate the cache
-        Cache::forget('products_frontend');
-        Cache::forget('products_backend');
+        Cache::forget('productsFronted');
+        Cache::forget('productsBackend');
     }
 }
