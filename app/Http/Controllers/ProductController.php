@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
@@ -117,8 +118,23 @@ class ProductController extends Controller
          * @var int $page
          * @var int $limit
          */
+
+        // Implementing search
+        if ($request->has('searchTerm')){
+            // Set search term
+            $searchTerm = $request->input('searchTerm');
+            // Filter
+            $products = $products->filter( fn ( Product $product) =>
+                Str::contains($product->title, $searchTerm) ||
+                Str::contains($product->description, $searchTerm)
+            );
+        }
+
+        // Get total after filtering
         $total = $products->count();
+        // Calculate last page
         $lastPage = ceil($total/$limit);
+
         // Set page to last page if greater
         $page = $page > $lastPage ? $lastPage : $page;
 
