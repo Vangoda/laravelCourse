@@ -7,6 +7,7 @@ use App\Http\Controllers\LinkController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AmbassadorController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\StatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +47,7 @@ Route::prefix('admin')->group(function () {
     // The routes
     common('admin');
 
-    // Admin specific routes
+    // Admin protected routes
     Route::middleware('auth:sanctum', 'scope.admin' )->group(function () {
         Route::get('ambassadors', [AmbassadorController::class, 'index']);
         Route::get('users/{id}/links', [LinkController::class, 'index']);
@@ -72,6 +73,11 @@ Route::prefix('ambassador')->group(function () {
     // Ambassador specific
     Route::get('products/frontend', [ProductController::class, 'frontend']);
     Route::get('products/backend', [ProductController::class, 'backend']);
+
+    // Ambassador protected
+    Route::middleware('auth:sanctum', 'scope.ambassador' )->group(function () {
+        Route::get('stats', [StatsController::class, 'index']);
+    });
 });
 
 // Checkout
