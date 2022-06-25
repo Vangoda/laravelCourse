@@ -39,6 +39,9 @@ class ProductController extends Controller
             'price'
         ));
 
+        // Fire the event to update cache
+        event(new ProductUpdatedEvent);
+
         return response($product, Response::HTTP_CREATED);
     }
 
@@ -87,6 +90,9 @@ class ProductController extends Controller
     {
         // Deletes the existing product model and remove it from the DB
         $product->delete();
+
+        // Fire the event to update cache
+        event(new ProductUpdatedEvent);
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
