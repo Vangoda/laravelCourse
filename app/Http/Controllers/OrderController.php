@@ -88,7 +88,7 @@ class OrderController extends Controller
                     'amount' => $product->price*100,// Amount in cents, convert
                                                     // from $
                     'currency' => 'usd',
-                    'quantity' => $item->quantity
+                    'quantity' => $item['quantity']
                 ];
             }
 
@@ -96,7 +96,7 @@ class OrderController extends Controller
 
             $source = $stripe->checkout()->sessions()->create([
                 'payment_method_types' => ['card'],
-                'lin_items' => $lineItems,
+                'line_items' => $lineItems,
                 'success_url' => env('CHECKOUT_URL') . '/success?source={CHECKOUT_SESSION_ID}',
                 'cancel_url' => env('CHECKOUT_URL') . '/error'
             ]);
@@ -112,7 +112,7 @@ class OrderController extends Controller
             // Rollback on any exception
             DB::rollBack();
             // Return 400
-            abort(Response::HTTP_INTERNAL_SERVER_ERROR, "Data was not saved!");
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, "Data was not saved!\n" . $exception->getMessage());
         }
 
     }
