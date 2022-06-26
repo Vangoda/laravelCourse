@@ -112,8 +112,25 @@ class OrderController extends Controller
             // Rollback on any exception
             DB::rollBack();
             // Return 400
-            abort(Response::HTTP_INTERNAL_SERVER_ERROR, "Data was not saved!\n" . $exception->getMessage());
+            return response([
+                'errorMessage' => $exception->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    public function confirm(Request $request){
+        if(!$order = Order::where('transaction_id', $request->input('source'))->first()){
+            return response([
+                'error' => 'Order not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $order->complete = 1;
+        $order->save();
+
+        return response([
+            'message' => "Success!"
+        ], Response::HTTP_OK);
     }
 }

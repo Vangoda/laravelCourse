@@ -90,4 +90,5 @@ Route::prefix('checkout')->group(function() {
     Route::get('links/{code}', [LinkController::class, 'show']);
     Route::post('orders',[OrderController::class, 'store']);
     Route::get('orders',[OrderController::class, 'index']);
+    Route::post('orders/confirm',[OrderController::class, 'confirm']);
 });
