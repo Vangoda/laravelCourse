@@ -7,6 +7,7 @@ use App\Models\Link;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use Cartalyst\Stripe\Stripe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,6 +64,9 @@ class OrderController extends Controller
             
             $order->save();
 
+            // Create line items array representing order items formated for
+            // stripe.
+            $lineItems = array();
             // Create new order items from products in the current order
             foreach($request->input('orderItems') as $item){
                 $product = Product::find($item['product_id']);
@@ -76,10 +80,34 @@ class OrderController extends Controller
                 $orderItem->admin_revenue = ($orderItem->price*$orderItem->quantity*0.9);
 
                 $orderItem->save();
+
+                $lineItems[] = [
+                    'name' => $product->title,
+                    'description' => $product->description,
+                    'images' => [$product->image],  // Can take multiple images
+                    'amount' => $product->price*100,// Amount in cents, convert
+                                                    // from $
+                    'currency' => 'usd',
+                    'quantity' => $item->quantity
+                ];
             }
+
+            $stripe = Stripe::make(env('STRIPE_SECRET'));
+
+            $source = $stripe->checkout()->sessions()->create([
+                'payment_method_types' => ['card'],
+                'lin_items' => $lineItems,
+                'success_url' => env('CHECKOUT_URL') . '/success?source={CHECKOUT_SESSION_ID}',
+                'cancel_url' => env('CHECKOUT_URL') . '/error'
+            ]);
+
+            // Add stripe transaction if to the order
+            $order->transaction_id = $source['id'];
+            $order->save();
 
             // Commit if everything ran OK
             DB::commit();
+            return $source;
         }catch(Throwable $exception){
             // Rollback on any exception
             DB::rollBack();
@@ -87,6 +115,5 @@ class OrderController extends Controller
             abort(Response::HTTP_INTERNAL_SERVER_ERROR, "Data was not saved!");
         }
 
-        return $order->load('orderItems');
     }
 }
