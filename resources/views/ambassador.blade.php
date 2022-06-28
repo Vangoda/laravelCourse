@@ -1,0 +1,1 @@
+You have earned {{$order->ambassador_revenue}}$ for the link {{$order->code}}
