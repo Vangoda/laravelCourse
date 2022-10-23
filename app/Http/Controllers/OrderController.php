@@ -9,9 +9,14 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Cartalyst\Stripe\Stripe;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class OrderController extends Controller
@@ -32,12 +37,21 @@ class OrderController extends Controller
         return OrderResource::collection(Order::with('orderItems')->get());
     }
 
-    public function store(Request $request){
+    /**
+     * @param Request $request 
+     * @return mixed 
+     * @throws HttpException 
+     * @throws NotFoundHttpException 
+     * @throws Throwable 
+     * @throws BindingResolutionException 
+     */
+    public function store(Request $request)
+    {
         // Check for required request properties
-        if(!$request->has('code')){
+        if (!$request->has('code')) {
             abort(400, 'Invalid code!');
         }
-        if(!$request->has('orderItems')){
+        if (!$request->has('orderItems')) {
             abort(400, 'Missing order items!');
         }
 
@@ -46,7 +60,7 @@ class OrderController extends Controller
 
         // Create new Order
         // Using try catch block to stop DB transaction on any exception
-        try{
+        try {
             // Start a transaction to avoid data corruption.
             DB::beginTransaction();
             $order = new Order();
@@ -62,14 +76,14 @@ class OrderController extends Controller
             $order->country = $request->input('country');
             $order->city = $request->input('city');
             $order->zip = $request->input('zip');
-            
+
             $order->save();
 
             // Create line items array representing order items formated for
             // stripe.
             $lineItems = array();
             // Create new order items from products in the current order
-            foreach($request->input('orderItems') as $item){
+            foreach ($request->input('orderItems') as $item) {
                 $product = Product::find($item['product_id']);
 
                 $orderItem = new OrderItem();
@@ -77,8 +91,8 @@ class OrderController extends Controller
                 $orderItem->product_title = $product->title;
                 $orderItem->price = $product->price;
                 $orderItem->quantity = $item['quantity'];
-                $orderItem->ambassador_revenue = ($orderItem->price*$orderItem->quantity*0.1);
-                $orderItem->admin_revenue = ($orderItem->price*$orderItem->quantity*0.9);
+                $orderItem->ambassador_revenue = ($orderItem->price * $orderItem->quantity * 0.1);
+                $orderItem->admin_revenue = ($orderItem->price * $orderItem->quantity * 0.9);
 
                 $orderItem->save();
 
@@ -86,8 +100,8 @@ class OrderController extends Controller
                     'name' => $product->title,
                     'description' => $product->description,
                     'images' => [$product->image],  // Can take multiple images
-                    'amount' => $product->price*100,// Amount in cents, convert
-                                                    // from $
+                    'amount' => $product->price * 100, // Amount in cents, convert
+                    // from $
                     'currency' => 'usd',
                     'quantity' => $item['quantity']
                 ];
@@ -109,7 +123,7 @@ class OrderController extends Controller
             // Commit if everything ran OK
             DB::commit();
             return $source;
-        }catch(Throwable $exception){
+        } catch (Throwable $exception) {
             // Rollback on any exception
             DB::rollBack();
             // Return 400
@@ -117,11 +131,16 @@ class OrderController extends Controller
                 'errorMessage' => $exception->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    public function confirm(Request $request){
-        if(!$order = Order::where('transaction_id', $request->input('source'))->first()){
+    /**
+     * @param Request $request 
+     * @return HttpResponse|ResponseFactory 
+     * @throws BindingResolutionException 
+     */
+    public function confirm(Request $request)
+    {
+        if (!$order = Order::where('transaction_id', $request->input('source'))->first()) {
             return response([
                 'error' => 'Order not found'
             ], Response::HTTP_NOT_FOUND);
