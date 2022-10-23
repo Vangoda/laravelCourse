@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ViewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::any('/{any}', 'ViewController@admin-app')->where('any', '^(?!api).*$');
+Route::any('/{any}', [ViewController::class, 'app'])->where('any', '^(?!api).*$');
