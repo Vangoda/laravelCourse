@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::any('/{any}', 'ViewController@vue-admin')->where('any','^(?!api).*$');
+Route::any('/{any}', 'ViewController@admin-app')->where('any', '^(?!api).*$');
